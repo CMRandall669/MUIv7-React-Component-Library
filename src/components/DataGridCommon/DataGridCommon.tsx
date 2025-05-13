@@ -5,7 +5,7 @@ import {
   type GridColDef,
   type GridValidRowModel,
 } from "@mui/x-data-grid";
-import PaginationBar from "./DataGridComponents/PaginationBar";
+import PaginationBar from "./DataGridComponents/PaginationBar/PaginationBar";
 import Grid from "@mui/material/Grid";
 
 interface DataGridCommonProps<R extends GridValidRowModel> {
