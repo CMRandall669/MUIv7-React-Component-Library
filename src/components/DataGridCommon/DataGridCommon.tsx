@@ -2,22 +2,27 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import {
   DataGrid,
+  type DataGridProps,
   type GridColDef,
   type GridValidRowModel,
 } from "@mui/x-data-grid";
 import PaginationBar from "./DataGridComponents/PaginationBar/PaginationBar";
 import Grid from "@mui/material/Grid";
 
-interface DataGridCommonProps<R extends GridValidRowModel> {
+export interface DataGridCommonProps<R extends GridValidRowModel> {
   rows: R[];
   columns: GridColDef<R>[];
   checkboxSelection?: boolean;
+  processRowUpdate?: (newRow: R, oldRow: R) => R;
+  experimentalFeatures?: DataGridProps["experimentalFeatures"];
 }
 
 const DataGridCommon = <R extends GridValidRowModel>({
   rows,
   columns,
   checkboxSelection = false,
+  processRowUpdate,
+  experimentalFeatures,
 }: DataGridCommonProps<R>) => {
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(10);
@@ -48,6 +53,8 @@ const DataGridCommon = <R extends GridValidRowModel>({
           setPage(page);
           setPageSize(pageSize);
         }}
+        processRowUpdate={processRowUpdate}
+        experimentalFeatures={experimentalFeatures}
         hideFooterPagination
         hideFooter
         checkboxSelection={checkboxSelection}

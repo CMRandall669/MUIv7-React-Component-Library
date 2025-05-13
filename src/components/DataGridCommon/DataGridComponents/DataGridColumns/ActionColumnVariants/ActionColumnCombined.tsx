@@ -118,7 +118,7 @@ function ActionMenuCell<T extends GridValidRowModel>({
 }
 
 // Main column generator
-export const createActionColumn = <T extends GridValidRowModel>(
+export const ActionColumn = <T extends GridValidRowModel>(
   props: ActionColumnProps<T>
 ): GridColDef<T> => {
   const { field, headerName, width, variant, tooltip } = props;

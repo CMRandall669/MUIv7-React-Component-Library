@@ -14,7 +14,7 @@ export interface ActionTextColumnOptions<T extends GridValidRowModel> {
   width?: number;
 }
 
-export const createActionTextColumn = <T extends GridValidRowModel>({
+export const TextActionColumn = <T extends GridValidRowModel>({
   field,
   headerName,
   getLabel,

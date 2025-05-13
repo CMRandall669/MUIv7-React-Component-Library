@@ -5,6 +5,7 @@ import type {
   GridRenderCellParams,
   GridValidRowModel,
 } from "@mui/x-data-grid";
+import Box from "@mui/material/Box";
 
 export interface CheckboxColumnOptions<T extends GridValidRowModel> {
   field: string;
@@ -13,30 +14,46 @@ export interface CheckboxColumnOptions<T extends GridValidRowModel> {
   onRowSelect: (rowId: string | number, checked: boolean) => void;
   onSelectAll: (checked: boolean) => void;
   getRowId?: (row: T) => string | number;
+  width?: number;
 }
 
-export function createCheckboxColumn<T extends GridValidRowModel>({
+export function CheckboxColumn<T extends GridValidRowModel>({
   field,
   headerName,
   selectedRowIds,
   onRowSelect,
   onSelectAll,
   getRowId = (row) => row.id,
+  width,
 }: CheckboxColumnOptions<T>): GridColDef<T> {
   return {
     field,
     headerName,
+    width,
+    minWidth: 60,
+    align: "center",
+    headerAlign: "center",
     sortable: false,
     filterable: false,
     disableColumnMenu: true,
     renderHeader: () => {
       const allSelected = selectedRowIds.length > 0;
+
       return (
-        <Checkbox
-          checked={allSelected}
-          indeterminate={selectedRowIds.length > 0 && !allSelected}
-          onChange={(e) => onSelectAll(e.target.checked)}
-        />
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          height="100%"
+          width="100%"
+        >
+          <Checkbox
+            checked={allSelected}
+            indeterminate={selectedRowIds.length > 0 && !allSelected}
+            onChange={(e) => onSelectAll(e.target.checked)}
+            sx={{ p: 0 }}
+          />
+        </Box>
       );
     },
     renderCell: (params: GridRenderCellParams<T>) => {
@@ -44,10 +61,19 @@ export function createCheckboxColumn<T extends GridValidRowModel>({
       const isChecked = selectedRowIds.includes(rowId);
 
       return (
-        <Checkbox
-          checked={isChecked}
-          onChange={(e) => onRowSelect(rowId, e.target.checked)}
-        />
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          height="100%"
+          width="100%"
+        >
+          <Checkbox
+            checked={isChecked}
+            onChange={(e) => onRowSelect(rowId, e.target.checked)}
+            sx={{ p: 0 }}
+          />
+        </Box>
       );
     },
   };

@@ -12,10 +12,11 @@ export interface IconStatusTrackerOptions<T extends GridValidRowModel> {
   ) => {
     icon?: React.ReactNode;
     text?: string;
+    flex?: number;
   };
 }
 
-export function createIconStatusTrackerColumn<T extends GridValidRowModel>({
+export function IconStatusTrackerColumn<T extends GridValidRowModel>({
   field,
   headerName,
   getStatusDisplay,
@@ -23,6 +24,7 @@ export function createIconStatusTrackerColumn<T extends GridValidRowModel>({
   return {
     field,
     headerName,
+    minWidth: 100,
     renderCell: (params) => {
       const { icon, text } = getStatusDisplay(params.value, params.row);
 

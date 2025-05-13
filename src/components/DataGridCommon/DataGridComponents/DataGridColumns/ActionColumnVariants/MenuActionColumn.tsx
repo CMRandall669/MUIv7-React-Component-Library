@@ -82,7 +82,7 @@ function ActionMenuCell<T extends GridValidRowModel>({
   );
 }
 
-export const createActionMenuColumn = <T extends GridValidRowModel>({
+export const MenuActionColumn = <T extends GridValidRowModel>({
   field,
   headerName,
   getActions,

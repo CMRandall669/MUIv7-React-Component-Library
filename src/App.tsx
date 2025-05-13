@@ -1,8 +1,9 @@
 import React from "react";
 import Page from "./Page";
+import CustomerHealthPage from "./CustomerHealth";
 
 const App = () => {
-  return <Page />;
+  return <CustomerHealthPage />;
 };
 
 export default App;

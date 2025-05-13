@@ -22,7 +22,7 @@ export interface IconColumnOptions<T extends GridValidRowModel> {
   width?: number;
 }
 
-export const createActionIconColumn = <T extends GridValidRowModel>({
+export const IconActionColumn = <T extends GridValidRowModel>({
   field,
   headerName,
   getActions,
