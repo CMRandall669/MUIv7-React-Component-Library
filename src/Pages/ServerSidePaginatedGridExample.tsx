@@ -7,6 +7,7 @@ import type { UserRow } from "../mockData";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import type { ExportColumn } from "../components/DataGridCommon/DataGridComponents/ExportButton/exportUtils";
+import GlobalDateRangePicker from "../components/DateTimePicker/DateTimePicker";
 
 const TestDataGridPage = () => {
   const [paginationModel, setPaginationModel] = React.useState({
@@ -18,6 +19,10 @@ const TestDataGridPage = () => {
   const [rowCount, setRowCount] = React.useState(0);
   const [loading, setLoading] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
+  const [range, setRange] = useState<[Date, Date]>(() => {
+    const now = new Date();
+    return [new Date(now.getTime() - 24 * 60 * 60 * 1000), now];
+  });
 
   const fetchData = async () => {
     setLoading(true);
@@ -91,6 +96,16 @@ const TestDataGridPage = () => {
           isExporting: isExporting,
           fileName: "UserExport",
           title: "All Users",
+        }}
+      />
+
+      <GlobalDateRangePicker
+        startDate={range[0]}
+        endDate={range[1]}
+        setDateRange={(start, end) => setRange([start, end])}
+        onReset={() => {
+          const now = new Date();
+          setRange([new Date(now.getTime() - 24 * 60 * 60 * 1000), now]);
         }}
       />
     </div>
