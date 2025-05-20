@@ -1,48 +1,43 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import DropDownSelector from "./DropDownSelector/DropDownSelector";
+import TextField from "./TextField/TextField";
 import ClearFilterButton from "./FilterButtons/ClearFilterButton";
 import FilterButton from "./FilterButtons/FilterButton";
-import TextField from "./TextField/TextField";
+import type { FilterConfigItem } from "./types";
 
-const mockCustomers = ["Acme Corp", "Globex Inc", "Initech"];
-const mockDirections = ["Inbound", "Outbound", "Inbound and Outbound"];
-const mockStatuses = ["All Statuses", "Pending", "Complete"];
+interface FilterBarProps {
+  config: FilterConfigItem[];
+  onFilter?: (filters: Record<string, string>) => void;
+}
 
-const defaultFilters = {
-  customer: "",
-  direction: "",
-  status: "",
-  site: "",
-  docName: "",
-};
+const FilterBar = ({ config, onFilter }: FilterBarProps) => {
+  // Initialize filter state from config defaults
+  const defaultValues = React.useMemo(() => {
+    return config.reduce((acc, item) => {
+      acc[item.key] = item.defaultValue;
+      return acc;
+    }, {} as Record<string, string>);
+  }, [config]);
 
-const FilterBar = () => {
-  const [customer, setCustomer] = React.useState("");
-  const [direction, setDirection] = React.useState("");
-  const [status, setStatus] = React.useState("");
-  const [site, setSite] = React.useState("");
-  const [docName, setDocName] = React.useState("");
-
-  const filters = { customer, direction, status, site, docName };
+  const [filters, setFilters] =
+    React.useState<Record<string, string>>(defaultValues);
 
   const isDefault = React.useMemo(() => {
-    return Object.entries(defaultFilters).every(
-      ([key, val]) => filters[key as keyof typeof filters] === val
-    );
-  }, [filters]);
+    return config.every((item) => filters[item.key] === item.defaultValue);
+  }, [filters, config]);
 
   const handleClear = () => {
-    setCustomer("");
-    setDirection("");
-    setStatus("");
-    setSite("");
-    setDocName("");
+    setFilters(defaultValues);
   };
 
   const handleFilter = () => {
-    console.log("API call with:", filters);
-    // Replace with actual API call
+    if (onFilter) onFilter(filters);
+    else console.log("API call with:", filters);
+  };
+
+  const handleChange = (key: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -53,30 +48,31 @@ const FilterBar = () => {
         gap: 2,
         alignItems: "center",
         backgroundColor: "white",
-        px: 2,
-        py: 2,
       }}
     >
-      <DropDownSelector
-        label="Customer"
-        options={mockCustomers}
-        value={customer}
-        onChange={setCustomer}
-      />
-      <TextField label="Site" value={site} onChange={setSite} />
-      <TextField label="Document Name" value={docName} onChange={setDocName} />
-      <DropDownSelector
-        label="Transaction Type"
-        options={mockDirections}
-        value={direction}
-        onChange={setDirection}
-      />
-      <DropDownSelector
-        label="Status"
-        options={mockStatuses}
-        value={status}
-        onChange={setStatus}
-      />
+      {config.map((item) => {
+        if (item.type === "dropdown") {
+          return (
+            <DropDownSelector
+              key={item.key}
+              label={item.label}
+              options={item.options || []}
+              value={filters[item.key]}
+              onChange={(val) => handleChange(item.key, val)}
+            />
+          );
+        }
+
+        return (
+          <TextField
+            key={item.key}
+            label={item.label}
+            value={filters[item.key]}
+            onChange={(val) => handleChange(item.key, val)}
+          />
+        );
+      })}
+
       <ClearFilterButton onClear={handleClear} disabled={isDefault} />
       <FilterButton onFilter={handleFilter} disabled={isDefault} />
     </Box>

@@ -3,7 +3,7 @@ import {
   IconStatusTrackerColumn,
   StaticTextColumn,
   IconActionColumn,
-} from "../../DataGridComponents/DataGridColumns";
+} from "../../../../components/DataGridCommon/DataGridComponents/DataGridColumns";
 import type { GridColDef } from "@mui/x-data-grid";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
