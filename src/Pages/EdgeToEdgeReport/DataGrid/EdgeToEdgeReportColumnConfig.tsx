@@ -1,7 +1,7 @@
 import {
   CheckboxColumn,
   StaticTextColumn,
-} from "../../DataGridComponents/DataGridColumns";
+} from "../../../components/DataGridCommon/DataGridComponents/DataGridColumns";
 import type { GridColDef } from "@mui/x-data-grid";
 import type { EdgeToEdgeReportRow } from "./types";
 

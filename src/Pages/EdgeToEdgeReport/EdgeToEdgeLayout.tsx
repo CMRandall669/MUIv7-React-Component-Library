@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
-import DataGridCommon from "../components/DataGridCommon/DataGridCommon";
-import { getEdgeToEdgeReportColumns } from "../components/DataGridCommon/DataGridConfigs/EdgeToEdgeReport/EdgeToEdgeReportColumnConfig";
-import type { EdgeToEdgeReportRow } from "../components/DataGridCommon/DataGridConfigs/EdgeToEdgeReport/types";
-import { Button } from "@mui/material";
-import type { ExportColumn } from "../components/DataGridCommon/DataGridComponents/ExportButton/exportUtils";
+import DataGridCommon from "../../components/DataGridCommon/DataGridCommon";
+import { getEdgeToEdgeReportColumns } from "./DataGrid/EdgeToEdgeReportColumnConfig";
+import type { EdgeToEdgeReportRow } from "./DataGrid/types";
+import { Box } from "@mui/material";
+import type { ExportColumn } from "../../components/DataGridCommon/DataGridComponents/ExportButton/exportUtils";
+import EdgeToEdgeReportFilterBar from "./FilterBar/FilterBar";
+import SuppressBar from "../../components/SuppressBar/SuppressBar";
+import SuppressModal from "../../components/SuppressModal/SuppressModal";
 
 // Sample mock data (replace with API results)
 const mockData: EdgeToEdgeReportRow[] = [
@@ -43,6 +46,13 @@ const mockData: EdgeToEdgeReportRow[] = [
 const EdgeToEdgeReport = () => {
   const [rows, setRows] = useState<EdgeToEdgeReportRow[]>(mockData);
   const [selectedRowIds, setSelectedRowIds] = useState<(string | number)[]>([]);
+  const [suppressModalOpen, setSuppressModalOpen] = useState(false);
+
+  const selectedRows = rows.filter((row) => selectedRowIds.includes(row.id));
+  const inboundCount = rows.filter((row) => row.direction === "Inbound").length;
+  const outboundCount = rows.filter(
+    (row) => row.direction === "Outbound"
+  ).length;
 
   const columns = getEdgeToEdgeReportColumns({
     selectedRowIds,
@@ -61,11 +71,6 @@ const EdgeToEdgeReport = () => {
       label: col.headerName as string,
     }));
 
-  const handleExportSelected = () => {
-    const selectedRows = rows.filter((row) => selectedRowIds.includes(row.id));
-    console.log("Exporting:", selectedRows);
-  };
-
   return (
     <div
       style={{
@@ -75,14 +80,17 @@ const EdgeToEdgeReport = () => {
         margin: "0 auto",
       }}
     >
-      <Button
-        onClick={handleExportSelected}
-        variant="contained"
-        disabled={selectedRowIds.length === 0}
-        sx={{ mb: 1 }}
-      >
-        Export Selected
-      </Button>
+      <Box sx={{ px: 2, py: 2 }}>
+        <EdgeToEdgeReportFilterBar />
+      </Box>
+      <Box sx={{ py: 2, px: 2 }}>
+        <SuppressBar
+          selectedCount={selectedRowIds.length}
+          inboundCount={inboundCount}
+          outboundCount={outboundCount}
+          onSuppressClick={() => setSuppressModalOpen(true)}
+        />
+      </Box>
 
       <DataGridCommon<EdgeToEdgeReportRow>
         rows={rows}
@@ -107,6 +115,19 @@ const EdgeToEdgeReport = () => {
           title: "Edge to Edge Report",
           isExporting: false,
         }}
+      />
+
+      <SuppressModal
+        open={suppressModalOpen}
+        onClose={() => setSuppressModalOpen(false)}
+        onConfirm={(reason) => {
+          console.log("Suppression reason:", reason);
+          console.log("Suppressed rows:", selectedRows);
+          // TODO: trigger API call or row updates here
+          setSuppressModalOpen(false);
+        }}
+        rows={selectedRows}
+        columns={columns}
       />
     </div>
   );

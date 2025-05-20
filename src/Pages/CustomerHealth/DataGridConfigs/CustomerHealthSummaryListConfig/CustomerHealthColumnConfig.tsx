@@ -2,11 +2,13 @@ import {
   TextActionColumn,
   IconStatusTrackerColumn,
   StaticTextColumn,
-} from "../../DataGridComponents/DataGridColumns";
+  IconActionColumn,
+} from "../../../../components/DataGridCommon/DataGridComponents/DataGridColumns";
 import type { GridColDef } from "@mui/x-data-grid";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import type { CustomerHealthRow } from "./types";
 
 interface GetColumnsParams {
@@ -17,11 +19,10 @@ export const getCustomerHealthSummaryColumns = ({
   onCustomerClick,
 }: GetColumnsParams): GridColDef<CustomerHealthRow>[] => {
   return [
-    TextActionColumn<CustomerHealthRow>({
+    StaticTextColumn<CustomerHealthRow>({
       field: "customer",
       headerName: "Customer",
-      getLabel: (row) => row.customer,
-      onClick: onCustomerClick,
+      getValue: (row) => row.customer,
       flex: 1,
     }),
     IconStatusTrackerColumn({
@@ -68,11 +69,6 @@ export const getCustomerHealthSummaryColumns = ({
               icon: <AccessAlarmIcon sx={{ color: "#D32F2F" }} />,
               text: "Critical",
             };
-          case "atRisk":
-            return {
-              icon: <WarningAmberIcon sx={{ color: "#FF9800" }} />,
-              text: "At Risk",
-            };
           case "stable":
             return {
               icon: <TaskAltIcon sx={{ color: "#2E7D32" }} />,
@@ -82,10 +78,54 @@ export const getCustomerHealthSummaryColumns = ({
           default:
             return {
               icon: null,
-              text: "Cell",
+              text: "-",
             };
         }
       },
+    }),
+    IconStatusTrackerColumn({
+      field: "rmqStatistic",
+      headerName: "RMQ Statistic - Messages & Date/Time",
+      getStatusDisplay: (value) => {
+        switch (value) {
+          case "critical":
+            return {
+              icon: <AccessAlarmIcon sx={{ color: "#D32F2F" }} />,
+              text: "Critical",
+            };
+          case "atRisk":
+            return {
+              icon: <WarningAmberIcon sx={{ color: "#FF9800" }} />,
+              text: "At Risk",
+            };
+          case "stable":
+          default:
+            return {
+              icon: <TaskAltIcon sx={{ color: "#2E7D32" }} />,
+              text: "Stable",
+            };
+          case "cell":
+            return {
+              icon: null,
+              text: "-",
+            };
+        }
+      },
+    }),
+    IconActionColumn<CustomerHealthRow>({
+      field: "viewHealthDetails",
+      headerName: "Actions",
+      getActions: (row) => [
+        {
+          icon: <InfoOutlineIcon />,
+          tooltip: "View Health Details",
+          onClick: () => {
+            // TODO: Navigate to health details page
+            console.log("View Health Details for", row.customer);
+          },
+        },
+      ],
+      width: 60,
     }),
   ];
 };
