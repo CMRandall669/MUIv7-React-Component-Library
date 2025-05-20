@@ -9,6 +9,7 @@ interface PaginationBarProps {
   rowsPerPage: number;
   onPageChange: (newPage: number) => void;
   onRowsPerPageChange: (newRowsPerPage: number) => void;
+  rowsPerPageOptions?: number[];
 }
 
 const PaginationBar = ({
@@ -17,6 +18,7 @@ const PaginationBar = ({
   rowsPerPage,
   onPageChange,
   onRowsPerPageChange,
+  rowsPerPageOptions,
 }: PaginationBarProps) => {
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
@@ -41,7 +43,7 @@ const PaginationBar = ({
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[10, 25, 50, 100]}
+        rowsPerPageOptions={rowsPerPageOptions ?? [10, 25, 50, 100]}
         showFirstButton
         showLastButton
         labelRowsPerPage={
