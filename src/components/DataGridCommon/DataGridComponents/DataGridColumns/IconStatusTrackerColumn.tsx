@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 export interface IconStatusTrackerOptions<T extends GridValidRowModel> {
   field: string;
   headerName: string;
+  flex?: number;
   getStatusDisplay: (
     value: unknown,
     row: T
@@ -20,10 +21,12 @@ export function IconStatusTrackerColumn<T extends GridValidRowModel>({
   field,
   headerName,
   getStatusDisplay,
+  flex = 1,
 }: IconStatusTrackerOptions<T>): GridColDef<T> {
   return {
     field,
     headerName,
+    flex,
     minWidth: 100,
     renderCell: (params) => {
       const { icon, text } = getStatusDisplay(params.value, params.row);

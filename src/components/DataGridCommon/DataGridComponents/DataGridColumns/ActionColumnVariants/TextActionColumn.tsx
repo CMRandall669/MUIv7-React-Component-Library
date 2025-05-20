@@ -12,6 +12,7 @@ export interface ActionTextColumnOptions<T extends GridValidRowModel> {
   getLabel: (row: T) => string;
   onClick: (row: T) => void;
   width?: number;
+  flex?: number;
 }
 
 export const TextActionColumn = <T extends GridValidRowModel>({
@@ -20,6 +21,7 @@ export const TextActionColumn = <T extends GridValidRowModel>({
   getLabel,
   onClick,
   width,
+  flex = 1,
 }: ActionTextColumnOptions<T>): GridColDef<T> => {
   return {
     field,
@@ -27,6 +29,7 @@ export const TextActionColumn = <T extends GridValidRowModel>({
     sortable: false,
     filterable: false,
     width,
+    flex,
     renderCell: (params: GridRenderCellParams<T>) => {
       const label = getLabel(params.row);
 
@@ -35,7 +38,13 @@ export const TextActionColumn = <T extends GridValidRowModel>({
           variant="text"
           size="small"
           onClick={() => onClick(params.row)}
-          sx={{ textTransform: "none", padding: 0, minWidth: 0 }}
+          sx={{
+            textTransform: "none",
+            padding: 0,
+            minWidth: 0,
+            width: "100%",
+            justifyContent: "flex-start",
+          }}
         >
           {label}
         </Button>

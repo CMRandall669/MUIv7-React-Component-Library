@@ -20,6 +20,7 @@ export interface IconColumnOptions<T extends GridValidRowModel> {
   headerName: string;
   getActions: (row: T) => RowAction<T>[];
   width?: number;
+  flex?: number;
 }
 
 export const IconActionColumn = <T extends GridValidRowModel>({
@@ -27,6 +28,7 @@ export const IconActionColumn = <T extends GridValidRowModel>({
   headerName,
   getActions,
   width,
+  flex = 1,
 }: IconColumnOptions<T>): GridColDef<T> => {
   return {
     field,
@@ -34,6 +36,7 @@ export const IconActionColumn = <T extends GridValidRowModel>({
     sortable: false,
     filterable: false,
     width,
+    flex,
     disableColumnMenu: true,
     renderCell: (params: GridRenderCellParams<T>) => {
       const actions = getActions(params.row);

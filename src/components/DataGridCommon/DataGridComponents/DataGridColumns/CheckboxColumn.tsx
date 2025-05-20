@@ -15,6 +15,7 @@ export interface CheckboxColumnOptions<T extends GridValidRowModel> {
   onSelectAll: (checked: boolean) => void;
   getRowId?: (row: T) => string | number;
   width?: number;
+  flex?: number;
 }
 
 export function CheckboxColumn<T extends GridValidRowModel>({
@@ -25,11 +26,13 @@ export function CheckboxColumn<T extends GridValidRowModel>({
   onSelectAll,
   getRowId = (row) => row.id,
   width,
+  flex,
 }: CheckboxColumnOptions<T>): GridColDef<T> {
   return {
     field,
     headerName,
     width,
+    flex,
     minWidth: 60,
     align: "center",
     headerAlign: "center",

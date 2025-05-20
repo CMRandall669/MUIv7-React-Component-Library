@@ -1,9 +1,11 @@
 import React from "react";
-import Page from "./Page";
-import CustomerHealthPage from "./CustomerHealth";
+// import Page from "./Page";
+import CustomerHealthPage from "./Pages/CustomerHealth";
+import EdgeToEdgeReport from "./Pages/EdgeToEdgeReport";
+import TestDataGridPage from "./Pages/ServerSidePaginatedGridExample";
 
 const App = () => {
-  return <CustomerHealthPage />;
+  return <TestDataGridPage />;
 };
 
 export default App;

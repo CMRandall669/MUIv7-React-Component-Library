@@ -5,7 +5,7 @@ import type {
   GridRenderCellParams,
   GridValidRowModel,
 } from "@mui/x-data-grid";
-
+import Box from "@mui/material/Box";
 interface ToggleCellProps<T> {
   row: T;
   getValue: (row: T) => boolean;
@@ -26,12 +26,20 @@ function ToggleCell<T extends GridValidRowModel>({
   };
 
   return (
-    <Switch
-      checked={checked}
-      onChange={handleChange}
-      color="primary"
-      size="small"
-    />
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      width="100%"
+      height="100%"
+    >
+      <Switch
+        checked={checked}
+        onChange={handleChange}
+        color="primary"
+        size="small"
+      />
+    </Box>
   );
 }
 
@@ -41,6 +49,7 @@ export interface ToggleActionIconOptions<T extends GridValidRowModel> {
   getValue: (row: T) => boolean;
   onToggle: (row: T, newValue: boolean) => void;
   width?: number;
+  flex?: number;
 }
 
 export const ToggleActionColumn = <T extends GridValidRowModel>({
@@ -48,12 +57,14 @@ export const ToggleActionColumn = <T extends GridValidRowModel>({
   headerName,
   getValue,
   onToggle,
-  width = 100,
+  width,
+  flex = 1,
 }: ToggleActionIconOptions<T>): GridColDef<T> => {
   return {
     field,
     headerName,
     width,
+    flex,
     sortable: false,
     filterable: false,
     disableColumnMenu: true,

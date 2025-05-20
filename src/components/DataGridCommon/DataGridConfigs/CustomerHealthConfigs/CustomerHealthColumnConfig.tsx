@@ -7,13 +7,7 @@ import type { GridColDef } from "@mui/x-data-grid";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
-
-export interface CustomerHealthRow {
-  customer: string;
-  overallHealth: "critical" | "atRisk" | "stable";
-  unresolvedAlerts: number | string;
-  directoryMonitor: "critical" | "atRisk" | "stable" | "cell";
-}
+import type { CustomerHealthRow } from "./types";
 
 interface GetColumnsParams {
   onCustomerClick: (row: CustomerHealthRow) => void;
@@ -28,7 +22,7 @@ export const getCustomerHealthSummaryColumns = ({
       headerName: "Customer",
       getLabel: (row) => row.customer,
       onClick: onCustomerClick,
-      width: 200,
+      flex: 1,
     }),
     IconStatusTrackerColumn({
       field: "overallHealth",
@@ -57,7 +51,7 @@ export const getCustomerHealthSummaryColumns = ({
     StaticTextColumn({
       field: "unresolvedAlerts",
       headerName: "Edge To Edge Alerts - Unresolved",
-      width: 200,
+      flex: 1,
       getValue: (row) =>
         typeof row.unresolvedAlerts === "number"
           ? row.unresolvedAlerts.toLocaleString()
@@ -66,6 +60,7 @@ export const getCustomerHealthSummaryColumns = ({
     IconStatusTrackerColumn({
       field: "directoryMonitor",
       headerName: "Directory Monitor - Statuses",
+      flex: 1,
       getStatusDisplay: (value) => {
         switch (value) {
           case "critical":

@@ -23,6 +23,7 @@ export interface ActionMenuColumnOptions<T extends GridValidRowModel> {
   getActions: (row: T) => RowMenuAction<T>[];
   width?: number;
   tooltip?: string;
+  flex?: number;
 }
 
 function ActionMenuCell<T extends GridValidRowModel>({
@@ -47,7 +48,7 @@ function ActionMenuCell<T extends GridValidRowModel>({
   };
 
   const iconButton = (
-    <IconButton size="small" onClick={handleOpen}>
+    <IconButton size="small" onClick={handleOpen} sx={{ padding: 0.5 }}>
       <MoreVertIcon fontSize="small" />
     </IconButton>
   );
@@ -88,6 +89,7 @@ export const MenuActionColumn = <T extends GridValidRowModel>({
   getActions,
   width,
   tooltip,
+  flex = 1,
 }: ActionMenuColumnOptions<T>): GridColDef<T> => {
   return {
     field,
@@ -96,6 +98,7 @@ export const MenuActionColumn = <T extends GridValidRowModel>({
     filterable: false,
     disableColumnMenu: true,
     width,
+    flex,
     renderCell: (params: GridRenderCellParams<T>) => (
       <ActionMenuCell
         row={params.row}

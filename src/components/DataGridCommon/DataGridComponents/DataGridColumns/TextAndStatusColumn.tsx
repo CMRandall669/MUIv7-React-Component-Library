@@ -19,6 +19,7 @@ export interface StringAndStatusColumnOptions<T extends GridValidRowModel> {
   getString: (row: T) => string | number;
   getStatusDisplay: (row: T) => StatusDisplay;
   width?: number;
+  flex?: number;
 }
 
 export const TextAndStatusColumn = <T extends GridValidRowModel>({

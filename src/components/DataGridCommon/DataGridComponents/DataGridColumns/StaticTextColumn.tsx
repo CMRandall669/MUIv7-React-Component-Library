@@ -12,18 +12,21 @@ export interface StaticStringColumnOptions<T extends GridValidRowModel> {
   headerName: string;
   width?: number;
   getValue: (row: T) => string | number | null;
+  flex?: number;
 }
 
 export const StaticTextColumn = <T extends GridValidRowModel>({
   field,
   headerName,
-  width = 150,
   getValue,
+  width,
+  flex = 1,
 }: StaticStringColumnOptions<T>): GridColDef<T> => {
   return {
     field,
     headerName,
     width,
+    flex,
     sortable: false,
     filterable: false,
     renderCell: (params: GridRenderCellParams<T>) => {
