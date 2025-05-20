@@ -13,10 +13,11 @@ import ExportButton from "./DataGridComponents/ExportButton/ExportButton";
 import type { ExportColumn } from "./DataGridComponents/ExportButton/exportUtils";
 
 export interface DataGridCommonExportProps<T> {
-  variant: "client";
-  rows: T[];
-  columns: ExportColumn<T>[];
+  variant: "client" | "server";
+  rows?: T[];
+  getExportData?: () => Promise<T[]>;
   isExporting: boolean;
+  columns: ExportColumn<T>[];
   fileName?: string;
   title?: string;
 }
@@ -24,40 +25,55 @@ export interface DataGridCommonExportProps<T> {
 export interface DataGridCommonProps<R extends GridValidRowModel> {
   rows: R[];
   columns: GridColDef<R>[];
-  rowCount?: number;
+  rowCount: number;
   checkboxSelection?: boolean;
   processRowUpdate?: (newRow: R, oldRow: R) => R;
   experimentalFeatures?: DataGridProps["experimentalFeatures"];
-  paginationModel: { page: number; pageSize: number };
-  onPaginationModelChange: (model: { page: number; pageSize: number }) => void;
   getRowId?: (row: R) => GridRowId;
+  paginationModel: {
+    page: number;
+    pageSize: number;
+  };
+  onPaginationModelChange: (model: { page: number; pageSize: number }) => void;
   exportProps?: DataGridCommonExportProps<R>;
 }
 
 const DataGridCommon = <R extends GridValidRowModel>({
   rows,
   columns,
+  rowCount,
   checkboxSelection = false,
   processRowUpdate,
   experimentalFeatures,
+  getRowId,
+  paginationModel,
+  onPaginationModelChange,
   exportProps,
 }: DataGridCommonProps<R>) => {
-  const [page, setPage] = React.useState(0);
-  const [pageSize, setPageSize] = React.useState(10);
+  const handlePageChange = (newPage: number) => {
+    onPaginationModelChange({
+      page: newPage,
+      pageSize: paginationModel.pageSize,
+    });
+  };
+
+  const handleRowsPerPageChange = (newPageSize: number) => {
+    onPaginationModelChange({
+      page: 0,
+      pageSize: newPageSize,
+    });
+  };
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
       <Grid container justifyContent="space-between" alignItems="center">
         <Grid>
           <PaginationBar
-            count={rows.length}
-            page={page}
-            rowsPerPage={pageSize}
-            onPageChange={setPage}
-            onRowsPerPageChange={(newPageSize) => {
-              setPageSize(newPageSize);
-              setPage(0);
-            }}
+            count={rowCount}
+            page={paginationModel.page}
+            rowsPerPage={paginationModel.pageSize}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
           />
         </Grid>
         <Grid sx={{ pr: 2 }}>
@@ -68,18 +84,17 @@ const DataGridCommon = <R extends GridValidRowModel>({
       <DataGrid
         rows={rows}
         columns={columns}
-        paginationMode="client"
-        paginationModel={{ page, pageSize }}
-        onPaginationModelChange={({ page, pageSize }) => {
-          setPage(page);
-          setPageSize(pageSize);
-        }}
+        rowCount={rowCount}
+        paginationMode="server"
+        paginationModel={paginationModel}
+        onPaginationModelChange={onPaginationModelChange}
         processRowUpdate={processRowUpdate}
         experimentalFeatures={experimentalFeatures}
-        hideFooterPagination
-        hideFooter
+        getRowId={getRowId}
         checkboxSelection={checkboxSelection}
         disableRowSelectionOnClick
+        hideFooterPagination
+        hideFooter
         sx={{
           height: "calc(100% - 64px)",
           borderRadius: 0,
@@ -96,14 +111,11 @@ const DataGridCommon = <R extends GridValidRowModel>({
         <Grid size={4} sx={{ backgroundColor: "white" }} />
         <Grid size={8}>
           <PaginationBar
-            count={rows.length}
-            page={page}
-            rowsPerPage={pageSize}
-            onPageChange={setPage}
-            onRowsPerPageChange={(newPageSize) => {
-              setPageSize(newPageSize);
-              setPage(0);
-            }}
+            count={rowCount}
+            page={paginationModel.page}
+            rowsPerPage={paginationModel.pageSize}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
           />
         </Grid>
       </Grid>
