@@ -6,6 +6,7 @@ import TestDataGridPage from "./Pages/ServerSidePaginatedGridExample";
 import GlobalDateRangePicker from "./components/DateTimePicker/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import FilterBar from "./components/FilterBarComponents/FilterBar";
 
 const App = () => {
   const [range, setRange] = useState<[Date, Date]>(() => {
@@ -21,7 +22,8 @@ const App = () => {
           endDate={range[1]}
           setDateRange={(start, end) => setRange([start, end])}
         />
-        <TestDataGridPage />
+        <FilterBar />
+        <CustomerHealthPage />
       </LocalizationProvider>
     </div>
   );

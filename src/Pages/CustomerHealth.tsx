@@ -3,9 +3,10 @@ import { useState } from "react";
 import { getCustomerHealthSummaryColumns } from "../components/DataGridCommon/DataGridConfigs/CustomerHealthConfigs/CustomerHealthColumnConfig";
 import type { CustomerHealthRow } from "../components/DataGridCommon/DataGridConfigs/CustomerHealthConfigs/types";
 import DataGridCommon from "../components/DataGridCommon/DataGridCommon";
+import { mockCustomerHealthData } from "../components/DataGridCommon/DataGridConfigs/CustomerHealthConfigs/chMockData";
 
 const CustomerHealthPage = () => {
-  const [rows, setRows] = useState<CustomerHealthRow[]>([]);
+  const [rows, setRows] = useState<CustomerHealthRow[]>(mockCustomerHealthData);
 
   const handleCustomerClick = (row: CustomerHealthRow) => {
     console.log("Navigate to customer detail for:", row.customer);
@@ -28,13 +29,10 @@ const CustomerHealthPage = () => {
         columns={columns}
         paginationModel={{
           page: 0,
-          pageSize: 0,
+          pageSize: 10,
         }}
-        onPaginationModelChange={function (model: {
-          page: number;
-          pageSize: number;
-        }): void {
-          throw new Error("Function not implemented.");
+        onPaginationModelChange={() => {
+          // Mock pagination handler (can be left empty for testing)
         }}
       />
       ;
