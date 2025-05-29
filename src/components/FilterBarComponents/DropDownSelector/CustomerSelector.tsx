@@ -7,20 +7,18 @@ interface OptionObject {
   value: string;
 }
 
-interface DropDownSelectorProps {
+interface CustomerSelectorProps {
   label: string;
   options: DropdownOption[];
   value: string;
   onChange: (newValue: string) => void;
-  shrinkLabel?: boolean;
 }
-const DropDownSelector = ({
+const CustomerSelector = ({
   label,
   options,
   value,
   onChange,
-  shrinkLabel,
-}: DropDownSelectorProps) => {
+}: CustomerSelectorProps) => {
   const isObjectOptions = typeof options[0] === "object";
 
   return (
@@ -38,7 +36,7 @@ const DropDownSelector = ({
         },
       }}
     >
-      <InputLabel shrink={shrinkLabel}>{label}</InputLabel>
+      <InputLabel>{label}</InputLabel>
       <Select
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -86,4 +84,4 @@ const DropDownSelector = ({
   );
 };
 
-export default DropDownSelector;
+export default CustomerSelector;
