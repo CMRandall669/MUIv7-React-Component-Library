@@ -14,6 +14,7 @@ export interface CheckboxColumnOptions<T extends GridValidRowModel> {
   onRowSelect: (rowId: string | number, checked: boolean) => void;
   onSelectAll: (checked: boolean) => void;
   getRowId?: (row: T) => string | number;
+  getCheckboxProps?: (row: T) => { disabled?: boolean };
   width?: number;
   flex?: number;
 }
@@ -25,6 +26,7 @@ export function CheckboxColumn<T extends GridValidRowModel>({
   onRowSelect,
   onSelectAll,
   getRowId = (row) => row.id,
+  getCheckboxProps,
   width,
   flex,
 }: CheckboxColumnOptions<T>): GridColDef<T> {
@@ -60,8 +62,11 @@ export function CheckboxColumn<T extends GridValidRowModel>({
       );
     },
     renderCell: (params: GridRenderCellParams<T>) => {
-      const rowId = getRowId(params.row);
+      const row = params.row;
+      const rowId = getRowId(row);
       const isChecked = selectedRowIds.includes(rowId);
+
+      const checkboxProps = getCheckboxProps?.(row) ?? {};
 
       return (
         <Box
@@ -75,6 +80,7 @@ export function CheckboxColumn<T extends GridValidRowModel>({
             checked={isChecked}
             onChange={(e) => onRowSelect(rowId, e.target.checked)}
             sx={{ p: 0 }}
+            {...checkboxProps}
           />
         </Box>
       );
