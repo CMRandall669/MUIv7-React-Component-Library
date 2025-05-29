@@ -6,13 +6,18 @@ interface FilterButtonProps {
   disabled?: boolean;
 }
 
-const FilterButton = ({ onFilter, disabled = false }: FilterButtonProps) => {
+const FilterButton = ({ onFilter }: FilterButtonProps) => {
   return (
     <Button
       variant="contained"
       onClick={onFilter}
-      disabled={disabled}
-      sx={{ textTransform: "none" }}
+      sx={{
+        textTransform: "none",
+        backgroundColor: "#075895 !important",
+        "&:hover": {
+          backgroundColor: "#064c7a !important",
+        },
+      }}
     >
       Filter Table
     </Button>

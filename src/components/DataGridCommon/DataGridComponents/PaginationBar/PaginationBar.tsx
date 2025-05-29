@@ -2,6 +2,7 @@ import * as React from "react";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import { Typography } from "@mui/material";
+import { formatWithCommas } from "../../helper";
 
 interface PaginationBarProps {
   count: number;
@@ -31,7 +32,6 @@ const PaginationBar = ({
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     onRowsPerPageChange(parseInt(event.target.value, 10));
-    onPageChange(0);
   };
 
   return (
@@ -51,6 +51,13 @@ const PaginationBar = ({
             Rows per page:
           </Typography>
         }
+        labelDisplayedRows={({ from, to, count }) =>
+          `${formatWithCommas(from)}–${formatWithCommas(to)} of ${
+            count !== -1
+              ? formatWithCommas(count)
+              : `more than ${formatWithCommas(to)}`
+          }`
+        }
         sx={{
           ".MuiTablePagination-selectLabel": {
             fontSize: "0.75rem",
@@ -66,8 +73,11 @@ const PaginationBar = ({
           ".MuiTablePagination-displayedRows": {
             fontSize: "0.75rem",
           },
-          ".MuiTablePagination-actions": {
-            fontSize: "0.75rem",
+          ".MuiTablePagination-actions button:not(:disabled)": {
+            color: "#0000008F",
+            "&:hover": {
+              backgroundColor: "rgba(25, 118, 210, 0.08)",
+            },
           },
         }}
       />

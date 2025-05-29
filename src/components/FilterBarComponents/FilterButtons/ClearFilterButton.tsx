@@ -6,17 +6,9 @@ interface ClearFilterButtonProps {
   disabled?: boolean;
 }
 
-const ClearFilterButton = ({
-  onClear,
-  disabled = false,
-}: ClearFilterButtonProps) => {
+const ClearFilterButton = ({ onClear }: ClearFilterButtonProps) => {
   return (
-    <Button
-      variant="outlined"
-      onClick={onClear}
-      disabled={disabled}
-      sx={{ textTransform: "none" }}
-    >
+    <Button variant="outlined" onClick={onClear} sx={{ textTransform: "none" }}>
       Clear Filters
     </Button>
   );

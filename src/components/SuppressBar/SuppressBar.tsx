@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import OutboundOutlinedIcon from "@mui/icons-material/OutboundOutlined";
+import { formatWithCommas } from "../../components/DataGridCommon/helper";
 
 interface SuppressBarProps {
   selectedCount: number;
@@ -34,13 +35,13 @@ const SuppressBar = ({
           sx={{ transform: "rotate(180deg)", color: "#607485" }}
         />
         <Typography color="#000000" fontSize="0.875rem">
-          {inboundCount} Inbound
+          {formatWithCommas(inboundCount)} Inbound
         </Typography>
       </Box>
       <Box display="flex" alignItems="center" gap={1}>
         <OutboundOutlinedIcon fontSize="small" sx={{ color: "#607485" }} />
         <Typography color="#000000" fontSize="0.875rem">
-          {outboundCount} Outbound
+          {formatWithCommas(outboundCount)} Outbound
         </Typography>
       </Box>
     </Box>

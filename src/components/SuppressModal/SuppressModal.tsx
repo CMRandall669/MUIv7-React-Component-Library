@@ -10,6 +10,7 @@ import {
   Box,
 } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import ModalDataGridCommon from "../DataGridCommon/ModalDataGridCommon";
 import type { EdgeToEdgeReportRow } from "../../Pages/EdgeToEdgeReport/DataGrid/types";
 import PaginationBar from "../../components/DataGridCommon/DataGridComponents/PaginationBar/PaginationBar";
 
@@ -19,6 +20,25 @@ interface SuppressModalProps {
   onConfirm: (reason: string) => void;
   rows: EdgeToEdgeReportRow[];
   columns: GridColDef[];
+  titleText?: string;
+  confirmMessage?: string;
+  tableHeader?: string;
+  tableSubtext?: string;
+  confirmButtonText?: string;
+}
+
+interface SuppressModalProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (reason: string) => void;
+  rows: EdgeToEdgeReportRow[];
+  columns: GridColDef[];
+
+  titleText?: string;
+  confirmMessage?: string;
+  tableHeader?: string;
+  tableSubtext?: string;
+  confirmButtonText?: string;
 }
 
 const SuppressModal = ({
@@ -27,8 +47,14 @@ const SuppressModal = ({
   onConfirm,
   rows,
   columns,
+  titleText = "Confirm Suppression",
+  confirmMessage = "Are you sure you want to suppress the selected alerts? This action will remove them from the table and cannot be undone.",
+  tableHeader = "Selected Alerts for Suppression",
+  tableSubtext = "Review the alerts below before confirming their removal from the unresolved alerts table.",
+  confirmButtonText = "Confirm Suppression",
 }: SuppressModalProps) => {
   const [reason, setReason] = useState("");
+  const [reasonError, setReasonError] = useState(false);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(5);
 
@@ -36,8 +62,18 @@ const SuppressModal = ({
     if (!open) {
       setReason("");
       setPage(0);
+      setReasonError(false);
     }
   }, [open]);
+
+  const handleConfirmClick = () => {
+    if (reason.trim() === "") {
+      setReasonError(true);
+    } else {
+      setReasonError(false);
+      onConfirm(reason);
+    }
+  };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="lg">
@@ -54,7 +90,7 @@ const SuppressModal = ({
             py: 2,
           }}
         >
-          Confirm Suppression
+          {titleText}
         </Typography>
       </DialogTitle>
 
@@ -69,8 +105,7 @@ const SuppressModal = ({
             pb: 2.5,
           }}
         >
-          Are you sure you want to suppress the selected alerts? This action
-          will remove them from the table and cannot be undone.
+          {confirmMessage}
         </Typography>
 
         <Typography
@@ -84,38 +119,18 @@ const SuppressModal = ({
             px: 2,
           }}
         >
-          Selected Alerts for Suppression
+          {tableHeader}
         </Typography>
 
         <Typography variant="subtitle2" sx={{ color: "#00000099", px: 2 }}>
-          Review the alerts below before confirming their removal from the
-          unresolved alerts table.
+          {tableSubtext}
         </Typography>
-        <Box sx={{ py: 2 }}>
-          <Box sx={{ pb: 2 }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              disableRowSelectionOnClick
-              hideFooter
-              paginationMode="client"
-              paginationModel={{ page, pageSize }}
-              onPaginationModelChange={({ page, pageSize }) => {
-                setPage(page);
-                setPageSize(pageSize);
-              }}
-              getRowId={(row) => row.id}
-              sx={{ border: 0 }}
-            />
-          </Box>
 
-          <PaginationBar
-            count={rows.length}
-            page={page}
-            rowsPerPage={pageSize}
-            onPageChange={setPage}
-            onRowsPerPageChange={setPageSize}
-            rowsPerPageOptions={[5, 10, 15]}
+        <Box sx={{ py: 2 }}>
+          <ModalDataGridCommon
+            rows={rows}
+            columns={columns}
+            checkboxSelection={false}
           />
         </Box>
 
@@ -125,27 +140,31 @@ const SuppressModal = ({
           multiline
           label="Add the Reason For Suppression"
           value={reason}
-          onChange={(e) => setReason(e.target.value)}
+          onChange={(e) => {
+            setReason(e.target.value);
+            if (e.target.value.trim() !== "") {
+              setReasonError(false);
+            }
+          }}
           slotProps={{
             htmlInput: {
               maxLength: 2000,
             },
           }}
-          helperText={`${reason.length}/2000`}
+          error={reasonError}
+          helperText={`${reason.length}/2000${
+            reasonError ? " — This field is required" : ""
+          }`}
           sx={{ mt: 2 }}
         />
       </DialogContent>
+
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onClose} color="primary">
           Cancel
         </Button>
-        <Button
-          onClick={() => onConfirm(reason)}
-          color="error"
-          variant="contained"
-          disabled={reason.trim() === ""}
-        >
-          Confirm Suppression
+        <Button onClick={handleConfirmClick} color="error" variant="text">
+          <Typography fontSize="0.875rem">{confirmButtonText}</Typography>
         </Button>
       </DialogActions>
     </Dialog>
