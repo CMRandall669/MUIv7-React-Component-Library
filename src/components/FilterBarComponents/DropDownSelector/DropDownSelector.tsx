@@ -22,6 +22,11 @@ const DropDownSelector = ({
   shrinkLabel,
 }: DropDownSelectorProps) => {
   const isObjectOptions = typeof options[0] === "object";
+  const validValues = options.map((opt) =>
+    typeof opt === "string" ? opt : opt.value
+  );
+
+  const safeValue = validValues.includes(value ?? "") ? value ?? "" : "";
 
   return (
     <FormControl
@@ -40,7 +45,7 @@ const DropDownSelector = ({
     >
       <InputLabel shrink={shrinkLabel}>{label}</InputLabel>
       <Select
-        value={value}
+        value={safeValue}
         onChange={(e) => onChange(e.target.value)}
         displayEmpty
         renderValue={(selected) => {
