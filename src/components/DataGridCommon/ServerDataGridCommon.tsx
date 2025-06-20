@@ -1,6 +1,14 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import {
+  Box,
+  Paper,
+  Grid,
+  CircularProgress,
+  GlobalStyles,
+  Typography,
+} from "@mui/material";
+import {
   DataGrid,
   type DataGridProps,
   type GridColDef,
@@ -8,16 +16,9 @@ import {
   type GridValidRowModel,
 } from "@mui/x-data-grid";
 import PaginationBar from "./DataGridComponents/PaginationBar/PaginationBar";
-import Grid from "@mui/material/Grid";
-import {
-  CircularProgress,
-  GlobalStyles,
-  Typography,
-  Box,
-  Paper,
-} from "@mui/material";
 import ExportButton from "./DataGridComponents/ExportButton/ExportButton";
 import type { ExportColumn } from "./DataGridComponents/ExportButton/exportUtils";
+import { calculateGridHeight } from "./utils";
 
 export interface DataGridCommonExportProps<T> {
   variant: "client" | "server";
@@ -45,6 +46,14 @@ export interface DataGridCommonProps<R extends GridValidRowModel> {
   exportProps?: DataGridCommonExportProps<R>;
   loading?: boolean;
   isFetching?: boolean;
+  height?: number;
+  sx?: React.ComponentProps<typeof Box>["sx"];
+  minVisibleRows?: number;
+  rowHeight?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  autoHeight?: boolean;
+  getRowHeight?: DataGridProps["getRowHeight"];
 }
 
 const DataGridCommon = <R extends GridValidRowModel>({
@@ -60,30 +69,22 @@ const DataGridCommon = <R extends GridValidRowModel>({
   exportProps,
   loading,
   isFetching,
+  height,
+  sx,
+  minVisibleRows = 6,
+  rowHeight = 52,
+  minHeight,
+  maxHeight,
+  autoHeight,
+  getRowHeight,
 }: DataGridCommonProps<R>) => {
-  const handlePageChange = (newPage: number) => {
-    onPaginationModelChange({
-      page: newPage,
-      pageSize: paginationModel.pageSize,
-    });
-  };
-
-  const handleRowsPerPageChange = (newPageSize: number) => {
-    onPaginationModelChange({
-      page: 0,
-      pageSize: newPageSize,
-    });
-  };
-
-  const [animateRows, setAnimateRows] = React.useState(false);
+  const [animateRows, setAnimateRows] = useState(false);
   const previousRowSignature = React.useRef<string | null>(null);
 
   useEffect(() => {
-    const currentRowIds = rows.map((row, i) => {
-      const id = typeof getRowId === "function" ? getRowId(row) : row.id;
-      return id;
-    });
-
+    const currentRowIds = rows.map((row) =>
+      typeof getRowId === "function" ? getRowId(row) : row.id
+    );
     const currentSignature = JSON.stringify(currentRowIds);
 
     const shouldAnimate =
@@ -100,28 +101,44 @@ const DataGridCommon = <R extends GridValidRowModel>({
     previousRowSignature.current = currentSignature;
   }, [rows, getRowId]);
 
+  const resolvedHeight =
+    height ??
+    calculateGridHeight({
+      rowCount: Math.max(paginationModel.pageSize, minVisibleRows),
+      rowHeight,
+    });
+
+  const handlePageChange = (newPage: number) => {
+    onPaginationModelChange({
+      page: newPage,
+      pageSize: paginationModel.pageSize,
+    });
+  };
+
+  const handleRowsPerPageChange = (newPageSize: number) => {
+    onPaginationModelChange({ page: 0, pageSize: newPageSize });
+  };
+
   return (
     <>
       <GlobalStyles
         styles={{
           "@keyframes fadeIn": {
-            from: {
-              opacity: 0,
-              transform: "translateY(6px)",
-            },
-            to: {
-              opacity: 1,
-              transform: "translateY(0)",
-            },
+            from: { opacity: 0, transform: "translateY(6px)" },
+            to: { opacity: 1, transform: "translateY(0)" },
           },
         }}
       />
       <Box
+        id="Server-DataGrid-Container"
         sx={{
           display: "flex",
           flexDirection: "column",
           width: "100%",
-          height: "100vh",
+          height: autoHeight ? "auto" : resolvedHeight,
+          minHeight,
+          maxHeight,
+          ...sx,
         }}
       >
         <Grid container alignItems="center" justifyContent="space-between">
@@ -167,9 +184,12 @@ const DataGridCommon = <R extends GridValidRowModel>({
             hideFooterPagination
             hideFooter
             loading={loading}
+            autoHeight={autoHeight}
+            getRowHeight={getRowHeight}
             sx={{
-              height: "100%",
+              height: autoHeight ? undefined : "100%",
               borderRadius: 0,
+              border: 0,
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontSize: "0.875rem",
                 fontWeight: 600,
@@ -180,7 +200,7 @@ const DataGridCommon = <R extends GridValidRowModel>({
           />
         </Box>
 
-        <Paper sx={{ width: "100%", backgroundColor: "white" }}>
+        <Box sx={{ width: "100%", backgroundColor: "white" }}>
           <Grid container justifyContent="flex-end">
             <Grid>
               <PaginationBar
@@ -192,7 +212,7 @@ const DataGridCommon = <R extends GridValidRowModel>({
               />
             </Grid>
           </Grid>
-        </Paper>
+        </Box>
       </Box>
     </>
   );

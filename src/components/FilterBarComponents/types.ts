@@ -1,14 +1,32 @@
-export type FilterType = "dropdown" | "text";
+export type FilterType = "dropdown" | "text" | "static";
 
-// Support both simple strings or { label, value } objects
 export type DropdownOption = string | { label: string; value: string };
 
-export interface FilterConfigItem {
-  key: string;              // Unique key used for value and API param
-  label: string;            // Label to show on the field
-  type: FilterType;         // "text" or "dropdown"
-  options?: DropdownOption[]; // Only for dropdowns
-  defaultValue: string;     // Used for initial value and reset
+interface BaseFilterConfigItem {
+  key: string;
+  label: string;
+  type: FilterType;
 }
+
+interface TextFilterConfigItem extends BaseFilterConfigItem {
+  type: "text";
+  defaultValue: string;
+}
+
+interface DropdownFilterConfigItem extends BaseFilterConfigItem {
+  type: "dropdown";
+  options: DropdownOption[];
+  defaultValue: string;
+}
+
+interface StaticFilterConfigItem extends BaseFilterConfigItem {
+  type: "static";
+  value: string;
+}
+
+export type FilterConfigItem =
+  | TextFilterConfigItem
+  | DropdownFilterConfigItem
+  | StaticFilterConfigItem;
 
 export type FilterConfig = FilterConfigItem[];
